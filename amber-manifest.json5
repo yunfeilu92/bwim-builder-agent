@@ -12,11 +12,11 @@
       "9019"
     ],
     env: {
-      LLM_BACKEND: "${config.llm_backend}",
-      LLM_MODEL: "${config.llm_model}",
-      AWS_ACCESS_KEY_ID: "${config.aws_access_key_id}",
-      AWS_SECRET_ACCESS_KEY: "${config.aws_secret_access_key}",
-      AWS_REGION: "${config.aws_region}"
+      LLM_BACKEND: "bedrock",
+      LLM_MODEL: "us.anthropic.claude-sonnet-4-6-20260516-v1:0",
+      AWS_ACCESS_KEY_ID: "${config.AWS_ACCESS_KEY_ID}",
+      AWS_SECRET_ACCESS_KEY: "${config.AWS_SECRET_ACCESS_KEY}",
+      AWS_REGION: "${config.AWS_REGION}"
     },
     network: {
       endpoints: [
@@ -27,13 +27,13 @@
   config_schema: {
     type: "object",
     properties: {
-      aws_access_key_id: { type: "string", secret: true },
-      aws_secret_access_key: { type: "string", secret: true },
-      aws_region: { type: "string" },
-      llm_backend: { type: "string" },
-      llm_model: { type: "string" }
+      AWS_ACCESS_KEY_ID: { type: "string", secret: true },
+      AWS_SECRET_ACCESS_KEY: { type: "string", secret: true },
+      AWS_REGION: { type: "string" },
+      LLM_BACKEND: { type: "string" },
+      LLM_MODEL: { type: "string" }
     },
-    required: ["aws_access_key_id", "aws_secret_access_key"],
+    required: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
     additionalProperties: false
   },
   provides: {
