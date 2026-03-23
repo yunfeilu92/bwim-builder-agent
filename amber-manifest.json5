@@ -1,6 +1,29 @@
 {
   manifest_version: "0.1.0",
-
+  program: {
+    image: "ghcr.io/yunfeilu92/bwim-builder-agent:latest",
+    entrypoint: [
+      "uv",
+      "run",
+      "src/server.py",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "9019"
+    ],
+    env: {
+      LLM_BACKEND: "${config.llm_backend}",
+      LLM_MODEL: "${config.llm_model}",
+      AWS_ACCESS_KEY_ID: "${config.aws_access_key_id}",
+      AWS_SECRET_ACCESS_KEY: "${config.aws_secret_access_key}",
+      AWS_REGION: "${config.aws_region}"
+    },
+    network: {
+      endpoints: [
+        { name: "endpoint", port: 9019 }
+      ]
+    }
+  },
   config_schema: {
     type: "object",
     properties: {
@@ -8,38 +31,15 @@
       aws_secret_access_key: { type: "string", secret: true },
       aws_region: { type: "string" },
       llm_backend: { type: "string" },
-      llm_model: { type: "string" },
+      llm_model: { type: "string" }
     },
     required: ["aws_access_key_id", "aws_secret_access_key"],
-    additionalProperties: false,
+    additionalProperties: false
   },
-
-  slots: {
-    proxy: { kind: "a2a", optional: true },
-  },
-
-  program: {
-    image: "ghcr.io/yunfeilu92/bwim-builder-agent:latest",
-    entrypoint: "uv run src/server.py --host 0.0.0.0 --port 9019",
-
-    env: {
-      LLM_BACKEND: "bedrock",
-      LLM_MODEL: "us.anthropic.claude-sonnet-4-6-20260516-v1:0",
-      AWS_ACCESS_KEY_ID: "${config.aws_access_key_id}",
-      AWS_SECRET_ACCESS_KEY: "${config.aws_secret_access_key}",
-      AWS_REGION: "${config.aws_region || 'us-east-1'}",
-    },
-
-    network: {
-      endpoints: [
-        { name: "a2a_endpoint", port: 9019 },
-      ],
-    },
-  },
-
   provides: {
-    a2a: { kind: "a2a", endpoint: "a2a_endpoint" },
+    a2a: { kind: "a2a", endpoint: "endpoint" }
   },
-
-  exports: { a2a: "a2a" },
+  exports: {
+    a2a: "a2a"
+  }
 }
